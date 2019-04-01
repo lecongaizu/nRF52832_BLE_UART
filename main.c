@@ -121,8 +121,8 @@ static ble_uuid_t m_adv_uuids[]          =                                      
 #define  C_Hello_nRF52832             0x52
 #define  C_Reset_Counter              0x54
 
-#define  Output_select_hi_nordic      0x01
-#define  Output_select_hello_nRF52832 0x02
+#define  Output_select_Nordic         0x01
+#define  Output_select_nRF52832       0x02
 
 #define  Default_zero                 0x00
 
@@ -222,10 +222,10 @@ static void nus_data_handler(ble_nus_evt_t * p_evt)
        switch (p_evt->params.rx_data.p_data[0])
        {
             case C_Hi_Nordic:
-              StringSelec = Output_select_hi_nordic;
+              StringSelec = Output_select_Nordic;
               break;
             case C_Hello_nRF52832:
-              StringSelec = Output_select_hello_nRF52832;
+              StringSelec = Output_select_nRF52832;
               break;
             case C_Reset_Counter:
               counter = Default_zero;
@@ -743,17 +743,17 @@ int main(void)
     NRF_LOG_INFO("Debug logging for UART over RTT started.");
     advertising_start();
 
-    StringSelec = Output_select_hello_nRF52832;
+    StringSelec = Output_select_nRF52832;
     counter = Default_zero;
     length = Default_zero;
     // Enter main loop.
     for (;;)
     {
         memset(printf_buffer, 0x00, sizeof(printf_buffer));
-        if (StringSelec == Output_select_hi_nordic)
-            sprintf(printf_buffer, "testing 11, %d\r\n", counter++);
+        if (StringSelec == Output_select_Nordic)
+            sprintf(printf_buffer, "Hello Nordic, %d\r\n", counter++);
         else
-            sprintf(printf_buffer, "testing 22, %d\r\n", counter++);
+            sprintf(printf_buffer, "Hello nRF52832, %d\r\n", counter++);
         length = strlen(printf_buffer);
         uint32_t err_code = ble_nus_data_send(&m_nus, (uint8_t *)printf_buffer, &length, m_conn_handle);
         idle_state_handle();
