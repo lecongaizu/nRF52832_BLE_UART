@@ -104,7 +104,8 @@
 #define UART_TX_BUF_SIZE                256                                         /**< UART TX buffer size. */
 #define UART_RX_BUF_SIZE                256                                         /**< UART RX buffer size. */
 
-
+#define UICR_ADDRESS                    0x10001080  
+#define MAJ_VAL_OFFSET_IN_BEACON_INFO   18    
 BLE_NUS_DEF(m_nus, NRF_SDH_BLE_TOTAL_LINK_COUNT);                                   /**< BLE NUS service instance. */
 NRF_BLE_GATT_DEF(m_gatt);                                                           /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                             /**< Context for the Queued Write module.*/
@@ -130,8 +131,6 @@ uint8_t StringSelec;
 char printf_buffer[128];
 uint8_t counter;
 uint16_t length;
-
-
 
 
 /**@brief Function for assert macro callback.
@@ -580,6 +579,7 @@ void uart_event_handle(app_uart_evt_t * p_event)
 /**@snippet [Handling the data received over UART] */
 
 
+
 /**@brief  Function for initializing the UART module.
  */
 /**@snippet [UART Initialization] */
@@ -618,11 +618,23 @@ static void uart_init(void)
 #define APP_ADV_DATA_LENGTH       0x15                              /**< Length of manufacturer specific data in the advertisement. */
 #define APP_DEVICE_TYPE           0x02                              /**< 0x02 refers to Beacon. */
 #define APP_COMPANY_IDENTIFIER    0x0543                           /**< Company identifier for MIWA LOCK CO.,Ltd. as per www.bluetooth.org. */
+#define APP_MEASURED_RSSI         0xC3
+#define APP_MAJOR_VALUE                 0x01, 0x02                         /**< Major value used to identify Beacons. */
+#define APP_MINOR_VALUE                 0x03, 0x04                         /**< Minor value used to identify Beacons. */
+#define APP_BEACON_UUID                 0x01, 0x12, 0x23, 0x34, \
+                                        0x45, 0x56, 0x67, 0x78, \
+                                        0x89, 0x9a, 0xab, 0xbc, \
+                                        0xcd, 0xde, 0xef, 0xf0            /**< Proprietary UUID for Beacon. */
 
 static uint8_t m_device_info[APP_BEACON_INFO_LENGTH] =                  /**< Information advertised by the Beacon. */
 {
     APP_DEVICE_TYPE,     // Manufacturer specific information. Specifies the device type in this                
-    APP_ADV_DATA_LENGTH, // Manufacturer specific information. Specifies the length of the                        
+    APP_ADV_DATA_LENGTH, // Manufacturer specific information. Specifies the length of the
+    APP_ADV_DATA_LENGTH,
+    APP_BEACON_UUID,
+    APP_MAJOR_VALUE,
+    APP_MINOR_VALUE,
+    APP_MEASURED_RSSI,
 };
 static void advertising_init(void)
 {
@@ -636,6 +648,16 @@ static void advertising_init(void)
     adv_manuf_data.data.size          = APP_BEACON_INFO_LENGTH;
     adv_manuf_data.company_identifier = APP_COMPANY_IDENTIFIER; //MIWA LOCK CO.,Ltd
 
+    uint16_t major_value = ((*(uint32_t *)UICR_ADDRESS) & 0xFFFF0000) >> 16;
+    uint16_t minor_value = ((*(uint32_t *)UICR_ADDRESS) & 0x0000FFFF);
+
+    uint8_t index = MAJ_VAL_OFFSET_IN_BEACON_INFO;
+
+    m_device_info[index++] = MSB_16(major_value);
+    m_device_info[index++] = LSB_16(major_value);
+
+    m_device_info[index++] = MSB_16(minor_value);
+    m_device_info[index++] = LSB_16(minor_value);
 
     memset(&init, 0, sizeof(init));
 

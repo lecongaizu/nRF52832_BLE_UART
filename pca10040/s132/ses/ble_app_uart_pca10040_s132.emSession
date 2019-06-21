@@ -60,7 +60,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="59" y="702" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="1" top="686" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="100" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="1" top="112" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="ble_app_uart_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="C:/Nordic_semi/nRF5_SDK_15.0.0/examples/ble_peripheral/ble_app_uart/main.c&#xa;&#xa;C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 4.10a/source/thumb_crt0.s&#xa;" fileDialogInitialDirectory="C:/Nordic_Semi/nRF5_SDK_15.0.0/examples/ble_peripheral/ble_app_uart" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
